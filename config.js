@@ -9,7 +9,7 @@ window.EVENT = {
   // Where RSVPs are sent. Leave empty for preview mode
   // (choices are kept in this browser only and shown as a copyable summary).
   // Works with a Google Apps Script web app URL or any endpoint that accepts JSON.
-  submitUrl: "",
+  submitUrl: "https://script.google.com/macros/s/AKfycbxQl7ylypdEUgfHhSwXpAz7mf6cLv_RwV9N-J_0eJtwrw7J2QNmHxKjighLPfxmInM7xQ/exec",
   // Optional: URL that returns {"taken":["C5","C6"]}. Falls back to taken.json.
   seatsUrl: "",
 
