@@ -1,57 +1,48 @@
 (function () {
   var E = window.EVENT, NS = "http://www.w3.org/2000/svg";
-  var SEAT = 28, GAP = 6, AISLE = 36, ROW = 36, PAD = 8, LBL = 28;
+  var SEAT = 28, GAP = 6, ROW = 36, PAD = 8, LBL = 28;
   var seats = {};
   var taken = {}, selected = [];
   var MAX = E.maxParty || 8;
   var $ = function (id) { return document.getElementById(id); };
 
   // ---------- build map ----------
-  var rowW = function (c) {
-    var n = c[0] + c[1] + c[2];
-    return n * (SEAT + GAP) - GAP + (c[0] && c[1] ? AISLE : 0) + (c[2] && c[1] ? AISLE : 0);
-  };
-  // Every row uses the widest row's section widths so aisles line up.
-  var secW = [0, 1, 2].map(function (i) {
-    return Math.max.apply(null, E.rows.map(function (r) { var c = r[1][i]; return c ? c * (SEAT + GAP) - GAP : 0; }));
-  });
-  var inner = secW[0] + secW[1] + secW[2] + AISLE * 2;
-  var W = inner + LBL * 2 + PAD * 2, H = E.rows.length * ROW + PAD;
+  // Rows are [label, seatCount, [accessible seat numbers]]. Shorter rows are centred,
+  // so a row with one seat fewer sits half a seat off from the row in front of it.
+  var maxN = Math.max.apply(null, E.rows.map(function (r) { return r[1]; }));
+  var W = PAD * 2 + LBL * 2 + maxN * (SEAT + GAP) - GAP, H = E.rows.length * ROW + PAD;
   var svg = document.createElementNS(NS, "svg");
   svg.setAttribute("viewBox", "0 0 " + W + " " + H);
   svg.setAttribute("role", "group");
   svg.setAttribute("aria-label", "Seats, front row at top");
 
+  function el(name, attrs) {
+    var n = document.createElementNS(NS, name);
+    Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); });
+    return n;
+  }
   E.rows.forEach(function (r, ri) {
-    var label = r[0], c = r[1], y = ri * ROW + PAD, num = 1;
+    var label = r[0], count = r[1], acc = r[2] || [], y = ri * ROW + PAD;
     [PAD + LBL / 2, W - PAD - LBL / 2].forEach(function (lx) {
-      var t = document.createElementNS(NS, "text");
-      t.setAttribute("class", "rowlbl");
-      t.setAttribute("x", lx); t.setAttribute("y", y + SEAT / 2);
-      t.setAttribute("aria-hidden", "true");
+      var t = el("text", { "class": "rowlbl", x: lx, y: y + SEAT / 2, "aria-hidden": "true" });
       t.textContent = label;
       svg.appendChild(t);
     });
-    var start = PAD + LBL;
-    c.forEach(function (count, si) {
-      var w = count ? count * (SEAT + GAP) - GAP : 0;
-      var x0 = start + (si === 0 ? secW[0] - w : si === 1 ? (secW[1] - w) / 2 : 0);
-      for (var k = 0; k < count; k++) {
-        var id = label + num++, x = x0 + k * (SEAT + GAP);
-        var rect = document.createElementNS(NS, "rect");
-        rect.setAttribute("x", x + 1); rect.setAttribute("y", y + 1);
-        rect.setAttribute("width", SEAT - 2); rect.setAttribute("height", SEAT - 2);
-        rect.setAttribute("rx", 6);
-        rect.setAttribute("tabindex", "0");
-        rect.setAttribute("role", "button");
-        rect.setAttribute("data-id", id);
-        var tt = document.createElementNS(NS, "title"); tt.textContent = "Seat " + id;
-        rect.appendChild(tt);
-        seats[id] = { el: rect };
-        svg.appendChild(rect);
+    var x0 = PAD + LBL + (maxN - count) * (SEAT + GAP) / 2;
+    for (var k = 0; k < count; k++) {
+      var id = label + (k + 1), x = x0 + k * (SEAT + GAP), isAcc = acc.indexOf(k + 1) > -1;
+      var rect = el("rect", { x: x + 1, y: y + 1, width: SEAT - 2, height: SEAT - 2, rx: 6, tabindex: "0", role: "button", "data-id": id });
+      var tt = document.createElementNS(NS, "title"); tt.textContent = "Seat " + id + (isAcc ? " (accessible)" : "");
+      rect.appendChild(tt);
+      seats[id] = { el: rect, acc: isAcc };
+      svg.appendChild(rect);
+      if (isAcc) {
+        var g = el("g", { "class": "acc-ico", transform: "translate(" + x + "," + y + ")", "pointer-events": "none", "aria-hidden": "true" });
+        g.appendChild(el("circle", { cx: 13, cy: 7, r: 2, "class": "dot" }));
+        g.appendChild(el("path", { d: "M13 10.5V16H18.5L20.5 21M10.5 13.5A5 5 0 1 0 17 20.5" }));
+        svg.appendChild(g);
       }
-      start += secW[si] + AISLE;
-    });
+    }
   });
   $("map").appendChild(svg);
 
@@ -72,7 +63,7 @@
       el.setAttribute("class", "seat" + (s ? " " + s : "") + (on ? " sel" : ""));
       el.setAttribute("aria-disabled", s ? "true" : "false");
       el.setAttribute("aria-pressed", on ? "true" : "false");
-      el.setAttribute("aria-label", "Seat " + id + (s === "taken" ? ", taken" : s === "held" ? ", reserved" : on ? ", selected" : ""));
+      el.setAttribute("aria-label", "Seat " + id + (seats[id].acc ? ", accessible" : "") + (s === "taken" ? ", taken" : s === "held" ? ", reserved" : on ? ", selected" : ""));
     });
     var n = selected.length;
     $("seatsText").textContent = n ? sortIds(selected).join(", ") : "None yet";

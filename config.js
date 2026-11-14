@@ -15,17 +15,17 @@ window.EVENT = {
 
   maxParty: 8,
 
-  // Rows are listed front (A, nearest the screen) to back.
-  // Each row lists seat counts for [left, center, right] sections.
-  // Placeholder layout totalling 235 seats. Replace with the real plan once measured.
+  // Rows run front (A, nearest the screen) to back. Each row is
+  // [label, seat count, [accessible seat numbers]]. Shorter rows are centred, which
+  // staggers them half a seat from the row in front. PLACEHOLDER counts totalling
+  // 235 until the room is counted. Seat IDs (like G8) will change when this is replaced.
   rows: [
-    ["A", [3, 8, 3]],
-    ["B", [4, 9, 4]], ["C", [4, 9, 4]], ["D", [4, 9, 4]], ["E", [4, 9, 4]],
-    ["F", [4, 9, 4]], ["G", [4, 9, 4]], ["H", [4, 9, 4]], ["I", [4, 9, 4]],
-    ["J", [4, 9, 4]], ["K", [4, 9, 4]], ["L", [4, 9, 4]], ["M", [4, 9, 4]],
-    ["N", [4, 9, 4]]
+    ["A", 21, [1, 21]],
+    ["B", 22], ["C", 21], ["D", 22], ["E", 21], ["F", 22],
+    ["G", 21], ["H", 22], ["I", 21], ["J", 22],
+    ["K", 20, [1, 20]]
   ],
 
-  // Seats held back (accessible spaces, crew, guests of honor).
-  held: { "N1": "Accessible", "N17": "Accessible" }
+  // Seats held back for crew or guests of honor, like { "C5": "Reserved" }.
+  held: {}
 };

@@ -40,6 +40,8 @@ h2{margin:0;font:400 clamp(42px,6vw,72px)/1 var(--display);text-transform:upperc
 .s.avail{background:var(--white);border:2px solid var(--navy)}
 .s.sel{background:var(--blue)}
 .s.taken{background:var(--red)}
+.s.acc{background:var(--white);border:2px solid var(--navy);position:relative}
+.s.acc::after{content:"";position:absolute;left:5px;top:3px;width:4px;height:4px;border-radius:50%;background:var(--navy)}
 
 .grid{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
 .mapcard{flex:999 1 600px;min-width:0;background:var(--card);border-radius:16px;padding:32px 24px;display:flex;flex-direction:column;gap:28px}
@@ -55,6 +57,10 @@ h2{margin:0;font:400 clamp(42px,6vw,72px)/1 var(--display);text-transform:upperc
 .seat:hover{fill:#dce7f3}
 .seat.sel{fill:var(--blue);stroke:var(--blue)}
 .seat.taken,.seat.held{fill:var(--red);stroke:var(--red);cursor:not-allowed}
+.acc-ico{fill:none;stroke:var(--navy);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.acc-ico .dot{fill:var(--navy);stroke:none}
+.seat.sel + .acc-ico,.seat.taken + .acc-ico{stroke:var(--white)}
+.seat.sel + .acc-ico .dot,.seat.taken + .acc-ico .dot{fill:var(--white)}
 .seat:focus{outline:none}
 .seat:focus-visible{stroke:var(--gold);stroke-width:4}
 
