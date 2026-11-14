@@ -4,7 +4,7 @@ window.EVENT = {
   subtitle: "A documentary featuring Kyle Bryant",
   date: "Thursday, December 3",
   time: "7:30 PM",
-  venue: "W.B. Ford Auditorium",
+  venue: "Anderson Auditorium, W.B. Ford Building",
 
   // Where RSVPs are sent. Leave empty for preview mode
   // (choices are kept in this browser only and shown as a copyable summary).

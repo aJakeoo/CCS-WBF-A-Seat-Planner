@@ -25,7 +25,7 @@ function ics_(name, seats) {
     "DTSTART:20261204T003000Z",
     "DTEND:20261204T020000Z",
     "SUMMARY:" + esc("The Highest Road: Community Screening"),
-    "LOCATION:" + esc("W.B. Ford Auditorium, College for Creative Studies, Detroit, MI"),
+    "LOCATION:" + esc("Wendell W. Anderson Jr. Auditorium, W.B. Ford Building, College for Creative Studies, 201 E. Kirby, Detroit, MI 48202"),
     "DESCRIPTION:" + esc(desc),
     "URL:" + DONATE_URL,
     "BEGIN:VALARM",
@@ -83,7 +83,8 @@ function doPost(e) {
               "Our organization, FARA, relies on grassroots awareness and fundraising, so please invite friends, family and anyone who can come.\n\n" +
               "The Highest Road, a documentary by Kyle Bryant, Sean Baumstark, FARA, Allan Thompson\n" +
               "Thursday, December 3 at 7:30 PM\n" +
-              "W.B. Ford Auditorium\n" +
+              "Anderson Auditorium, W.B. Ford Building\n" +
+              "College for Creative Studies, 201 E. Kirby, Detroit\n" +
               "Seats: " + seats.join(", ") + "\n" +
               "Cost: Free!\n\n" +
               "Screenings like this, FARA and the FA research community rely on donations. If you are able, please consider donating:\n" +
