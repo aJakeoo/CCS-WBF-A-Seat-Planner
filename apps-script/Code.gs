@@ -84,13 +84,12 @@ function doPost(e) {
               "The Highest Road, a documentary by Kyle Bryant, Sean Baumstark, FARA, Allan Thompson\n" +
               "Thursday, December 3 at 7:30 PM\n" +
               "W.B. Ford Auditorium\n" +
-              "Seats: " + seats.join(", ") + "\n\n" +
+              "Seats: " + seats.join(", ") + "\n" +
               "Cost: Free!\n\n" +
               "Screenings like this, FARA and the FA research community rely on donations. If you are able, please consider donating:\n" +
               DONATE_URL + "\n\n" +
               "You should check out the trailer:\n" +
               TRAILER_URL + "\n\n" +
-              "A calendar invite (.ics) is attached. Open it to add the screening to your calendar.\n\n" +
               "Thank you so much for fighting FA with me! I can't wait to see you at the screening!\n\n" +
               "Powered by Google Apps Script",
         attachments: [Utilities.newBlob(ics_(d.name, seats), "text/calendar", "The-Highest-Road-Screening.ics")]
