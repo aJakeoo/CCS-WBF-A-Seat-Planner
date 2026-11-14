@@ -10,7 +10,7 @@ function ics_(name, seats) {
   var esc = function (s) { return String(s).replace(/\\/g, "\\\\").replace(/([,;])/g, "\\$1").replace(/\n/g, "\\n"); };
   var stamp = Utilities.formatDate(new Date(), "UTC", "yyyyMMdd'T'HHmmss'Z'");
   var desc = "Seats: " + seats.join(", ") + "\n" +
-             "Free and open to everyone.\n\n" +
+             "Free and open to everyone. December 3 is the United Nations International Day of Persons with Disabilities.\n\n" +
              "Trailer: " + TRAILER_URL + "\n" +
              "Donate to FARA: " + DONATE_URL;
   return [
@@ -79,7 +79,7 @@ function doPost(e) {
         to: d.email,
         subject: "Reservation confirmed: The Highest Road: CCS Community Screening - Free, December 3",
         body: "Thanks, " + d.name + "! Your reservation is confirmed.\n\n" +
-              "This screening is free and open to everyone.\n\n" +
+              "This screening is free and open to everyone. It takes place on December 3, the United Nations International Day of Persons with Disabilities.\n\n" +
               "Our organization, FARA, relies on grassroots awareness and fundraising, so please invite friends, family and anyone who can come.\n\n" +
               "The Highest Road, a documentary by Kyle Bryant, Sean Baumstark, FARA, Allan Thompson\n" +
               "Thursday, December 3 at 7:30 PM\n" +

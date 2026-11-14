@@ -29,6 +29,7 @@ h1{margin:0;font:400 clamp(60px,12vw,176px)/.92 var(--display);text-transform:up
 .big{margin:6px 0 0;font:400 clamp(56px,9vw,128px)/.95 var(--display);text-transform:uppercase}
 .facts{display:flex;flex-direction:column;gap:4px;font-size:20px;font-weight:700}
 .caps{letter-spacing:.12em;text-transform:uppercase}
+.idpd{font-size:16px;max-width:360px}
 
 /* seat section */
 .seats-sec .wrap{padding-top:64px;padding-bottom:88px;display:flex;flex-direction:column;gap:32px}

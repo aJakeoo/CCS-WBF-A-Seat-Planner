@@ -1,7 +1,7 @@
 // Edit this file to change the event or the room. No build step needed.
 window.EVENT = {
   title: "The Highest Road",
-  subtitle: "A documentary featuring Kyle Bryant",
+  subtitle: "A documentary featuring Kyle Bryant, Sean Baumstark, and the FA community",
   date: "Thursday, December 3",
   time: "7:30 PM",
   venue: "Anderson Auditorium, W.B. Ford Building",
