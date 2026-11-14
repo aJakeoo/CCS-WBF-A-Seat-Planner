@@ -44,8 +44,8 @@ function doPost(e) {
         to: d.email,
         subject: "Reservation confirmed: The Highest Road, December 3",
         body: "Thanks, " + d.name + "! Your reservation is confirmed.\n\n" +
-              "The Highest Road, a documentary by Kyle Bryant\n" +
-              "Wednesday, December 3 at 7:30 PM\n" +
+              "The Highest Road, a FARA community screening\n" +
+              "Thursday, December 3, 7:30 to 9:00 PM\n" +
               "W.B. Ford Auditorium\n" +
               "Seats: " + seats.join(", ") + "\n\n" +
               "We look forward to seeing you there."

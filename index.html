@@ -3,58 +3,103 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Highest Road Screening | Reserve a seat</title>
-<meta name="description" content="Reserve your seat for the screening of The Highest Road, December 3 at 7:30 PM, W.B. Ford Auditorium.">
+<title>The Highest Road | Reserve a seat</title>
+<meta name="description" content="Reserve your seat for a free FARA community screening of The Highest Road, Thursday, December 3 at 7:30 PM, W.B. Ford Auditorium.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Lexend:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="top">
-  <p class="eyebrow" id="venue"></p>
-  <h1 id="title"></h1>
-  <p class="meta" id="meta"></p>
-</header>
 
-<main class="layout">
-  <section class="map-wrap" aria-label="Seat map">
-    <div class="screen" aria-hidden="true"><span>Screen</span></div>
-    <div id="map" class="map"></div>
-    <ul class="legend">
-      <li><i class="s avail"></i>Available</li>
-      <li><i class="s sel"></i>Yours</li>
-      <li><i class="s taken"></i>Taken</li>
-      <li><i class="s held"></i>Reserved</li>
-    </ul>
-    <p class="note">Seat layout is approximate.</p>
-  </section>
+<div id="page">
+  <header class="hero">
+    <div class="wrap">
+      <div class="topline">
+        <p>Join us for a free screening of:</p>
+        <p>Dec 3 &middot; 7:30 PM</p>
+      </div>
+      <h1>The Highest Road</h1>
+      <p class="sub">A documentary featuring Kyle Bryant</p>
+    </div>
+  </header>
 
-  <aside class="panel" aria-label="Your reservation">
-    <h2>Your seats</h2>
-    <div class="party">
-      <span>Party size</span>
-      <div class="stepper">
-        <button type="button" id="minus" aria-label="Fewer seats">&minus;</button>
-        <output id="partyOut">2</output>
-        <button type="button" id="plus" aria-label="More seats">+</button>
+  <section class="band">
+    <div class="wrap band-in">
+      <div>
+        <p class="label">A FARA community screening</p>
+        <p class="big">December 3</p>
+      </div>
+      <div class="facts">
+        <span>Thursday &middot; 7:30 &ndash; 9:00 PM</span>
+        <span>W.B. Ford Auditorium</span>
+        <span class="caps">Free admission</span>
       </div>
     </div>
-    <p class="chosen" id="chosen">No seats selected</p>
-    <form id="form" novalidate>
-      <label>Name<input id="name" autocomplete="name"></label>
-      <label>Email<input id="email" type="email" autocomplete="email"></label>
-      <p class="err" id="err" role="alert"></p>
-      <button type="submit" class="primary">Reserve</button>
-    </form>
-    <p class="fine" id="mode"></p>
   </section>
-</main>
 
-<div id="done" class="done" hidden>
-  <div class="card" role="dialog" aria-modal="true" aria-labelledby="doneT">
-    <h2 id="doneT">You are on the list</h2>
-    <p id="doneP"></p>
-    <pre id="doneS" hidden></pre>
-    <button type="button" class="primary" id="doneB">Close</button>
-  </div>
+  <main class="seats-sec">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Choose your seats</h2>
+        <ul class="legend">
+          <li><i class="s avail"></i>Available</li>
+          <li><i class="s sel"></i>Your seats</li>
+          <li><i class="s taken"></i>Taken</li>
+        </ul>
+      </div>
+
+      <div class="grid">
+        <section class="mapcard" aria-label="Seat map">
+          <div class="screen" aria-hidden="true"><div></div><span>Screen</span></div>
+          <div class="scroll"><div id="map" class="map"></div></div>
+          <p class="back">Back of the auditorium. Layout is approximate.</p>
+        </section>
+
+        <aside class="panel" aria-label="Your reservation">
+          <div class="mine">
+            <span class="label gold">Your seats</span>
+            <span class="mine-seats" id="seatsText">None yet</span>
+            <span class="mine-count" id="countText">Tap seats on the map to choose up to 8.</span>
+          </div>
+          <form id="form" novalidate>
+            <label>Name<input id="name" autocomplete="name" placeholder="Full name"></label>
+            <label>Email<input id="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
+            <p class="err" id="err" role="alert"></p>
+            <button type="submit" class="reserve" id="reserve">Reserve</button>
+          </form>
+          <p class="fine" id="mode">Free admission. We will email your confirmation.</p>
+        </aside>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="done" class="confirm" hidden>
+  <section class="hero">
+    <div class="wrap">
+      <div class="topline">
+        <p>The Highest Road</p>
+        <p>Dec 3 &middot; 7:30 PM</p>
+      </div>
+      <h1 class="thanks" tabindex="-1" id="doneT">Thanks! Reservation confirmed!</h1>
+      <p class="sub" id="doneP"></p>
+    </div>
+  </section>
+  <section class="band">
+    <div class="wrap details">
+      <div><span class="label">Your seats</span><span class="big-sm" id="doneSeats"></span></div>
+      <div><span class="label">Date</span><span class="big-sm">Thu, Dec 3</span></div>
+      <div><span class="label">Doors</span><span class="big-sm">7:30 PM</span></div>
+      <div><span class="label">Reserved for</span><strong id="doneName"></strong><span>W.B. Ford Auditorium</span></div>
+    </div>
+  </section>
+  <section class="foot">
+    <div class="wrap foot-in">
+      <p class="label">A FARA community screening &middot; Free admission</p>
+      <button type="button" class="linkbtn" id="doneB">Back to the seat map</button>
+    </div>
+  </section>
 </div>
 
 <script src="config.js"></script>
