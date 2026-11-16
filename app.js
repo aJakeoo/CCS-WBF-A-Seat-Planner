@@ -7,50 +7,67 @@
   var $ = function (id) { return document.getElementById(id); };
 
   // ---------- build map ----------
-  // Rows are [label, seatCount, [accessible seat numbers]]. Shorter rows are centred,
-  // so a row with one seat fewer sits half a seat off from the row in front of it.
-  var maxN = Math.max.apply(null, E.rows.map(function (r) { return r[1]; }));
+  // Rows are [label, seatCount, options]. options.spaces = [left, right] wheelchair spaces
+  // outside the seats; options.companion = seat numbers that are companion seats.
+  // Shorter rows are centred, so a row with one seat fewer sits half a seat off from the row in front.
+  function spaces(r) { return (r[2] && r[2].spaces) || [0, 0]; }
+  var maxN = Math.max.apply(null, E.rows.map(function (r) { return spaces(r)[0] + r[1] + spaces(r)[1]; }));
   var W = PAD * 2 + LBL * 2 + maxN * (SEAT + GAP) - GAP, H = E.rows.length * ROW + PAD;
   var svg = document.createElementNS(NS, "svg");
   svg.setAttribute("viewBox", "0 0 " + W + " " + H);
   svg.setAttribute("role", "group");
   svg.setAttribute("aria-label", "Seats, front row at top");
+  var order = {}, orderN = 0;
 
   function el(name, attrs) {
     var n = document.createElementNS(NS, name);
     Object.keys(attrs).forEach(function (k) { n.setAttribute(k, attrs[k]); });
     return n;
   }
+  function kindLabel(kind) { return kind === "w" ? ", wheelchair space" : kind === "c" ? ", companion seat" : ""; }
+  function icon(kind, x, y) {
+    var g = el("g", { "class": "acc-ico", transform: "translate(" + x + "," + y + ")", "pointer-events": "none", "aria-hidden": "true" });
+    if (kind === "w") {
+      g.appendChild(el("circle", { cx: 13, cy: 7, r: 2, "class": "dot" }));
+      g.appendChild(el("path", { d: "M13 10.5V16H18.5L20.5 21M10.5 13.5A5 5 0 1 0 17 20.5" }));
+    } else {
+      g.appendChild(el("circle", { cx: 14, cy: 9, r: 2.6, "class": "dot" }));
+      g.appendChild(el("path", { d: "M8.5 20.5C8.5 16.8 11 15 14 15S19.5 16.8 19.5 20.5" }));
+    }
+    return g;
+  }
   E.rows.forEach(function (r, ri) {
-    var label = r[0], count = r[1], acc = r[2] || [], y = ri * ROW + PAD;
+    var label = r[0], count = r[1], opt = r[2] || {}, sp = spaces(r), comp = opt.companion || [];
+    var y = ri * ROW + PAD, total = sp[0] + count + sp[1];
     [PAD + LBL / 2, W - PAD - LBL / 2].forEach(function (lx) {
       var t = el("text", { "class": "rowlbl", x: lx, y: y + SEAT / 2, "aria-hidden": "true" });
       t.textContent = label;
       svg.appendChild(t);
     });
-    var x0 = PAD + LBL + (maxN - count) * (SEAT + GAP) / 2;
-    for (var k = 0; k < count; k++) {
-      var id = label + (k + 1), x = x0 + k * (SEAT + GAP), isAcc = acc.indexOf(k + 1) > -1;
+    var x0 = PAD + LBL + (maxN - total) * (SEAT + GAP) / 2, pos = 0;
+    function add(id, kind) {
+      var x = x0 + pos++ * (SEAT + GAP);
       var rect = el("rect", { x: x + 1, y: y + 1, width: SEAT - 2, height: SEAT - 2, rx: 6, tabindex: "0", role: "button", "data-id": id });
-      var tt = document.createElementNS(NS, "title"); tt.textContent = "Seat " + id + (isAcc ? " (accessible)" : "");
+      var tt = document.createElementNS(NS, "title"); tt.textContent = "Seat " + id + kindLabel(kind);
       rect.appendChild(tt);
-      seats[id] = { el: rect, acc: isAcc };
+      seats[id] = { el: rect, kind: kind };
+      order[id] = orderN++;
       svg.appendChild(rect);
-      if (isAcc) {
-        var g = el("g", { "class": "acc-ico", transform: "translate(" + x + "," + y + ")", "pointer-events": "none", "aria-hidden": "true" });
-        g.appendChild(el("circle", { cx: 13, cy: 7, r: 2, "class": "dot" }));
-        g.appendChild(el("path", { d: "M13 10.5V16H18.5L20.5 21M10.5 13.5A5 5 0 1 0 17 20.5" }));
-        svg.appendChild(g);
-      }
+      if (kind) svg.appendChild(icon(kind, x, y));
     }
+    var i, k;
+    for (i = 0; i < sp[0]; i++) add(label + "W" + (i + 1), "w");
+    for (k = 1; k <= count; k++) add(label + k, comp.indexOf(k) > -1 ? "c" : "");
+    for (i = 0; i < sp[1]; i++) add(label + "W" + (sp[0] + i + 1), "w");
   });
   $("map").appendChild(svg);
 
   // ---------- state ----------
   function sortIds(list) {
-    return list.slice().sort(function (a, b) {
-      return a.charAt(0) === b.charAt(0) ? parseInt(a.slice(1), 10) - parseInt(b.slice(1), 10) : a.localeCompare(b);
-    });
+    return list.slice().sort(function (a, b) { return order[a] - order[b]; });
+  }
+  function needsNote() {
+    return selected.some(function (id) { return seats[id].kind; });
   }
   function status(id) {
     if (taken[id]) return "taken";
@@ -63,9 +80,10 @@
       el.setAttribute("class", "seat" + (s ? " " + s : "") + (on ? " sel" : ""));
       el.setAttribute("aria-disabled", s ? "true" : "false");
       el.setAttribute("aria-pressed", on ? "true" : "false");
-      el.setAttribute("aria-label", "Seat " + id + (seats[id].acc ? ", accessible" : "") + (s === "taken" ? ", taken" : s === "held" ? ", reserved" : on ? ", selected" : ""));
+      el.setAttribute("aria-label", "Seat " + id + kindLabel(seats[id].kind) + (s === "taken" ? ", taken" : s === "held" ? ", reserved" : on ? ", selected" : ""));
     });
     var n = selected.length;
+    $("accRow").hidden = !needsNote();
     $("seatsText").textContent = n ? sortIds(selected).join(", ") : "None yet";
     $("countText").textContent = n
       ? n + (n === 1 ? " seat" : " seats") + " selected" + (n >= MAX ? " (the most per reservation)" : "")
@@ -128,6 +146,7 @@
     var err = $("err"), name = $("name").value.trim(), email = $("email").value.trim();
     err.textContent = "";
     if (!selected.length) { err.textContent = "Choose at least one seat on the map."; return; }
+    if (needsNote() && !$("accOk").checked) { err.textContent = "Please confirm the wheelchair seating note."; return; }
     if (!name) { err.textContent = "Please enter your name."; return; }
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { err.textContent = "Please enter a valid email."; return; }
     var payload = { event: E.title, name: name, email: email, seats: sortIds(selected), when: new Date().toISOString() };

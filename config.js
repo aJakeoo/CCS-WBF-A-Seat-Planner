@@ -15,16 +15,18 @@ window.EVENT = {
 
   maxParty: 8,
 
-  // Rows run front (A, nearest the screen) to back. Each row is
-  // [label, seat count, [accessible seat numbers]]. Shorter rows are centred, which
-  // staggers them half a seat from the row in front. Counts come from the floor plan
-  // of room 100 (seat 1 is on the audience's left). The plan shows 251 seats while CCS
-  // lists 235, so confirm the real count in the room and adjust if needed.
+  // Rows run front (A, nearest the screen) to back. Each row is [label, seat count, options].
+  // options.spaces = [left, right] wheelchair spaces outside the seats (ids like AW1);
+  // options.companion = seat numbers that are companion seats. Wheelchair spaces and
+  // companion seats are for guests who use a wheelchair or are with someone who does.
+  // Shorter rows are centred, staggering them half a seat from the row in front. Counts come
+  // from the floor plan of room 100 (seat 1 is on the audience's left). The plan shows 251
+  // seats while CCS lists 235, so confirm the real count in the room and adjust if needed.
   rows: [
-    ["A", 21, [1, 21]],
+    ["A", 21, { spaces: [1, 1], companion: [1, 21] }],
     ["B", 22], ["C", 21], ["D", 22], ["E", 21], ["F", 22],
     ["G", 21], ["H", 22], ["I", 21], ["J", 22], ["K", 21],
-    ["L", 15, [1, 15]]
+    ["L", 15, { spaces: [2, 2], companion: [1, 15] }]
   ],
 
   // Seats held back for crew or guests of honor, like { "C5": "Reserved" }.

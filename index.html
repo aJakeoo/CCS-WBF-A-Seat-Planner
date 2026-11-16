@@ -48,7 +48,8 @@
           <li><i class="s avail"></i>Available</li>
           <li><i class="s sel"></i>Your seats</li>
           <li><i class="s taken"></i>Taken</li>
-          <li><i class="s acc"></i>Accessible</li>
+          <li><i class="s wc"><svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="13" cy="7" r="2.6" class="dot"/><path d="M13 10.5V16H18.5L20.5 21M10.5 13.5A5 5 0 1 0 17 20.5"/></svg></i>Wheelchair space</li>
+          <li><i class="s wc"><svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="9" r="3" class="dot"/><path d="M8.5 21C8.5 17 11 15 14 15S19.5 17 19.5 21"/></svg></i>Companion seat</li>
         </ul>
       </div>
 
@@ -68,6 +69,7 @@
           <form id="form" novalidate>
             <label>Name<input id="name" autocomplete="name" placeholder="Full name"></label>
             <label>Email<input id="email" type="email" autocomplete="email" placeholder="you@example.com"></label>
+            <label class="check" id="accRow" hidden><input type="checkbox" id="accOk"><span>I use a wheelchair, or I am reserving for someone who does.</span></label>
             <p class="err" id="err" role="alert"></p>
             <button type="submit" class="reserve" id="reserve">Reserve</button>
           </form>

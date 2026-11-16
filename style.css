@@ -42,8 +42,9 @@ h2{margin:0;font:400 clamp(42px,6vw,72px)/1 var(--display);text-transform:upperc
 .s.avail{background:var(--white);border:2px solid var(--navy)}
 .s.sel{background:var(--blue)}
 .s.taken{background:var(--red)}
-.s.acc{background:var(--white);border:2px solid var(--navy);position:relative}
-.s.acc::after{content:"";position:absolute;left:5px;top:3px;width:4px;height:4px;border-radius:50%;background:var(--navy)}
+.s.wc{background:var(--white);border:2px solid var(--navy);display:inline-flex;align-items:center;justify-content:center}
+.s.wc svg{width:14px;height:14px;fill:none;stroke:var(--navy);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.s.wc svg .dot{fill:var(--navy);stroke:none}
 
 .grid{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
 .mapcard{flex:999 1 600px;min-width:0;background:var(--card);border-radius:16px;padding:32px 24px;display:flex;flex-direction:column;gap:28px}
@@ -102,3 +103,7 @@ input::placeholder{color:#6b7480}
   .mapcard{padding:24px 12px}
   .panel{padding:24px}
 }
+
+.panel form label.check{flex-direction:row;align-items:flex-start;gap:12px;font-weight:500;font-size:15px;letter-spacing:0;text-transform:none;line-height:1.4}
+.panel form label.check[hidden]{display:none}
+.check input{width:22px;height:22px;flex:none;margin:1px 0 0;padding:0;accent-color:var(--gold)}
