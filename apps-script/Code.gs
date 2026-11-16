@@ -54,6 +54,34 @@ function takenSeats_() {
   return out;
 }
 
+// Saves a backup record of each reservation as an issue in the GitHub repo. The repo is PUBLIC,
+// so the record holds seat numbers and a time only. Never names or emails (those stay in the Sheet).
+// Needs two Script Properties (Project Settings, Script Properties): GITHUB_TOKEN and
+// GITHUB_REPO (like "owner/repo"). Does nothing when they are not set.
+// Never put the token in this file or in the repo.
+function backupToGithub_(d, seats, sheetOk, note) {
+  var props = PropertiesService.getScriptProperties();
+  var token = props.getProperty("GITHUB_TOKEN"), repo = props.getProperty("GITHUB_REPO");
+  if (!token || !repo) return false;
+  try {
+    var record = { seats: seats, savedToSheet: sheetOk, time: new Date().toISOString() };
+    var res = UrlFetchApp.fetch("https://api.github.com/repos/" + repo + "/issues", {
+      method: "post",
+      contentType: "application/json",
+      headers: { Authorization: "Bearer " + token, Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" },
+      payload: JSON.stringify({
+        title: "Seats " + seats.join(", "),
+        body: (note ? "**" + note + "**\n\n" : "") + "```json\n" + JSON.stringify(record, null, 2) + "\n```",
+        labels: sheetOk ? ["rsvp"] : ["rsvp", "needs-review"]
+      }),
+      muteHttpExceptions: true
+    });
+    return res.getResponseCode() === 201;
+  } catch (err) {
+    return false;
+  }
+}
+
 function json_(o) {
   return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
 }
@@ -70,10 +98,18 @@ function doPost(e) {
     var d = JSON.parse(e.postData.contents);
     var seats = (d.seats || []).map(String);
     if (!d.name || !d.email || !seats.length || seats.length > 8) return json_({ ok: false, error: "bad request" });
-    var taken = takenSeats_();
+    var sheetOk = true, note = "", taken = [];
+    try { taken = takenSeats_(); } catch (err) { sheetOk = false; note = "Could not read the Sheet, so double booking was not checked."; }
     var clash = seats.filter(function (s) { return taken.indexOf(s) > -1; });
     if (clash.length) return json_({ ok: false, taken: clash });
-    sheet_().appendRow([new Date(), String(d.name).slice(0, 100), String(d.email).slice(0, 100), seats.join(", ")]);
+    if (sheetOk) {
+      try {
+        sheet_().appendRow([new Date(), String(d.name).slice(0, 100), String(d.email).slice(0, 100), seats.join(", ")]);
+      } catch (err) { sheetOk = false; note = "Could not write to the Sheet."; }
+    }
+    // Seats-only backup record in the GitHub repo, so a reservation is not lost if the Sheet fails.
+    var ghOk = backupToGithub_(d, seats, sheetOk, note);
+    if (!sheetOk && !ghOk) return json_({ ok: false, error: "could not save" });
     try {
       MailApp.sendEmail({
         to: d.email,

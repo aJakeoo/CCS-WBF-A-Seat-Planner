@@ -17,13 +17,14 @@ window.EVENT = {
 
   // Rows run front (A, nearest the screen) to back. Each row is
   // [label, seat count, [accessible seat numbers]]. Shorter rows are centred, which
-  // staggers them half a seat from the row in front. PLACEHOLDER counts totalling
-  // 235 until the room is counted. Seat IDs (like G8) will change when this is replaced.
+  // staggers them half a seat from the row in front. Counts come from the floor plan
+  // of room 100 (seat 1 is on the audience's left). The plan shows 251 seats while CCS
+  // lists 235, so confirm the real count in the room and adjust if needed.
   rows: [
     ["A", 21, [1, 21]],
     ["B", 22], ["C", 21], ["D", 22], ["E", 21], ["F", 22],
-    ["G", 21], ["H", 22], ["I", 21], ["J", 22],
-    ["K", 20, [1, 20]]
+    ["G", 21], ["H", 22], ["I", 21], ["J", 22], ["K", 21],
+    ["L", 15, [1, 15]]
   ],
 
   // Seats held back for crew or guests of honor, like { "C5": "Reserved" }.
